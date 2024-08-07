@@ -1,36 +1,23 @@
-
 "use client";
-import React, { useState } from "react";
 import ItemList from "./item-list";
-import NewItem from "./new-item";
-import itemsData from "./items.json";
-import MealIdeas from "./meal-ideas";
+import Newitem from "./new-item";
+import List from "./items.json";
+import { useState } from "react";
 
 const Page = () => {
-  const [items, setItems] = useState(itemsData);
-  const [selectedItemName, setSelectedItemName] = useState("");
-
-  const handleItemSelect = (itemName) => {
-    setSelectedItemName(itemName);
+  const [data, setData] = useState(List);
+  const handleSubmit = (item) => {
+    setData([...data, item]);
   };
-
-  const handleAddItem = (newItem) => {
-    setItems([...items, newItem]);
-  };
-
   return (
-    <main className="bg-slate-950 w-full p-8 flex">
-      <div className="  pr-4  ">
-        <h1 className="text-2xl font-bold mb-4">Shopping List</h1>
-        <h3 className="text-xl font-bold">Add New Item</h3>
-        <NewItem onAddItem={handleAddItem} />
-        <ItemList items={items} onItemSelect={handleItemSelect} />
-      </div>
+    <div className="flex justify-center items-center flex-col gap-5 bg-red-400">
+      <h1 className="text-6xl my-5 text-black items-center">Shopping List</h1>
+
       <div>
-        <h1 className="text-2xl font-bold mb-4">Meal Ideas</h1>
-        <MealIdeas ingredient={selectedItemName} />
+        <Newitem Submit={handleSubmit} />
       </div>
-    </main>
+      <ItemList List={data} />
+    </div>
   );
 };
 

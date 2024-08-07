@@ -1,20 +1,15 @@
+import { Catamaran } from "next/font/google";
 import React from "react";
 
-function Item({ name, quantity, category, onSelect }) {
-  const handleClick = () => {
-    onSelect({ name, quantity, category });
-  };
-
+const Item = ({ name, quantity, category }) => {
   return (
-    <div onClick={handleClick}>
-      <li className="p-2 m-4 bg-slate-900 max-w-sm hover:bg-orange-800 cursor-pointer">
-        <h2 className="text-xl font-bold">{name}</h2>
-        <div className="text-sm">
-          Buy {quantity} in {category}
-        </div>
-      </li>
+    <div className="flex flex-col px-15 items-start pb-4">
+      <h1 className=" capitalize text-2xl ">{name}</h1>
+      <p className="items-center text-xl ">
+        Buy {quantity} in {category}
+      </p>
     </div>
   );
-}
+};
 
 export default Item;

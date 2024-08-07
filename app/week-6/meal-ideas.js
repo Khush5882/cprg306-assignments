@@ -1,106 +1,87 @@
-import React, { useState, useEffect } from "react";
+"use client";
 
-const fetchMealIdeas = async (ingredient) => {
-  const result = ingredient.replace(
-    /,.*$|([\u2700-\u27BF]|[\u2E80-\u2FA1]|\uD83E[\uDD10-\uDDFF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|[\u2694-\u2697]|\uD83E[\uDD10-\uDDFF]|\uD83D[\uDE03-\uDE0A]|\uD83C[\uDF00-\uDFFF]|\uD83E[\uDD5B\uDD5D\uDD60-\uDD67])/g,
-    ""
-  );
-  const response = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?i=${result}`
-  );
-  const data = await response.json();
-  return data.meals || [];
-};
+import React, { useState } from "react";
 
-const fetchMealDetails = async (mealId) => {
-  const response = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`
-  );
-  const data = await response.json();
-  return data.meals && data.meals[0];
-};
+const Newitem = ({ Submit }) => {
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [category, setCategory] = useState("product");
 
-const MealIdeas = ({ ingredient }) => {
-  const [meals, setMeals] = useState([]);
-  const [isDefault, setDefault] = useState(true);
-  const [activeItem, setActiveItem] = useState(null);
-  const [mealDetails, setMealDetails] = useState(null);
-
-  const toggleMenu = (index, mealId) => {
-    setActiveItem(index === activeItem ? null : index);
-
-    if (index !== activeItem) {
-      // Fetch meal details when expanding
-      fetchMealDetails(mealId).then((details) => setMealDetails(details));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    Submit({ name, quantity, category });
+    setName("");
+    setQuantity(1);
+    setCategory("product");
+  };
+  const values = (e) => {
+    if (e.target.value > 99) {
+      alert("Please enter a number less than 100");
+      setQuantity(99);
     }
   };
-
-  const loadMealIdeas = async () => {
-    setDefault(true);
-    const data = await fetchMealIdeas(ingredient);
-    setMeals(data);
-    setMealDetails(null); // Reset meal details
-    setActiveItem(null);
-    setDefault(false);
-  };
-
-  useEffect(() => {
-    if (ingredient) {
-      loadMealIdeas();
-    } else {
-      setMeals([]);
-      setMealDetails(null);
-    }
-  }, [ingredient]);
-
-  if (isDefault) {
-    return <p>Select an item to see meal ideas</p>;
-  }
-
-  if (!meals.length) {
-    return <p>No meal ideas found for {ingredient}</p>;
-  }
 
   return (
-    <div>
-      <h2>Here are some meal ideas using {ingredient}</h2>
-      <ul>
-        {meals.map((meal, index) => (
-          <li
-            key={meal.idMeal}
-            className="p-2 m-1 bg-slate-900 max-w-sm hover:bg-orange-800 cursor-pointer"
-          >
-            <button
-              onClick={() => toggleMenu(index, meal.idMeal)}
-              className="mb-2 p-1 text-white vp-2 w-full text-left rounded-md"
-            >
-              {meal.strMeal}
-              {activeItem === index && mealDetails && (
-                <ul className="pl-4 font-normal text-xs text-blue-200">
-                  <li>Ingredients needed:</li>
-                  {Object.keys(mealDetails).map((key) => {
-                    if (key.startsWith("strIngredient") && mealDetails[key]) {
-                      const measureKey = `strMeasure${key.slice(13)}`;
-                      return (
-                        <li className="pl-4 " key={key}>
-                          {mealDetails[key] && mealDetails[measureKey] && (
-                            <span>
-                              {mealDetails[key]} ({mealDetails[measureKey]})
-                            </span>
-                          )}
-                        </li>
-                      );
-                    }
-                    return null;
-                  })}
-                </ul>
-              )}
+    <div className="">
+      <form
+        onSubmit={handleSubmit}
+        className="flex justify-center flex-col gap-5"
+      >
+        <div className="border-gray-700 px-16 py-6 border-4 bg-black">
+          <div className="py-1 px-1">
+            <input
+              type="text"
+              placeholder="Name"
+              className=""
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="py-1 px-1">
+            <div className="">
+              <input
+                type="number"
+                placeholder="Quantity"
+                className=""
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value) || values(e)}
+                max={99}
+                required
+              />
+            </div>
+            <div className="py-2">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className=""
+              >
+                <option value="category" disabled>
+                  Category
+                </option>
+                <option value="product">Product</option>
+                <option value="dairy">Dairy</option>
+                <option value="bakery">Bakery</option>
+                <option value="meat">Meat</option>
+                <option value="frozenfood">Frozen Food</option>
+                <option value="cannedfood">Canned Food</option>
+                <option value="drygoods">Dry Goods</option>
+                <option value="beverages">Beverages</option>
+                <option value="snacks">Snacks</option>
+                <option value="household">Household</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div className="px-1">
+            <button type="submit" className="border-2 bg-blue-500 md:w-20 ">
+              +
             </button>
-          </li>
-        ))}
-      </ul>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default MealIdeas;
+export default Newitem;

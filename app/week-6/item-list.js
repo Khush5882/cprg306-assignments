@@ -1,54 +1,57 @@
 "use client";
-import Item from "./item";
-import React, { useState } from "react";
 
-const ItemList = ({ items, onItemSelect }) => {
+import Item from "./items";
+import { useState, useEffect } from "react";
+
+const ItemList = ({ List }) => {
   const [sortBy, setSortBy] = useState("name");
+  const [color, setColor] = useState("name");
+  const data = [...List].sort((a, b) => {
+    if (sortBy === "catagory") {
+      if (a.category < b.category) return -1;
+    }
+    if (sortBy === "name") {
+      if (a.name < b.name) return -1;
+    }
+  });
 
-  const sortedItems = items
-    .map((item) => item)
-    .sort((a, b) => {
-      if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
-      } else if (sortBy === "category") {
-        return a.category.localeCompare(b.category);
-      }
-      return 0;
-    });
-
+  const nameClick = () => {
+    setSortBy("name");
+    setColor("name");
+  };
+  const catagoryClick = () => {
+    setSortBy("catagory");
+    setColor("catagory");
+  };
   return (
-    <div className="mt-8">
-      <div>
-        <label htmlFor="sort">Sort by: </label>
+    <div className="flex flex-col gap-2 items-start">
+      <div className="flex flex-row gap-5 items-center">
+        <p className="p-2">Sort by:</p>
         <button
-          onClick={() => setSortBy("name")}
-          className={`p-1 m-2 w-28 ${
-            sortBy === "name" ? "bg-orange-400" : "bg-orange-500"
+          className={`p-2 ${
+            color === "name" ? "bg-orange-500" : "bg-orange-700"
           }`}
+          onClick={nameClick}
         >
           Name
         </button>
         <button
-          onClick={() => setSortBy("category")}
-          className={`p-1 m-2 w-28 ${
-            sortBy === "category" ? "bg-orange-400" : "bg-orange-500"
+          className={`p-2 ${
+            color === "catagory" ? "bg-orange-500" : "bg-orange-700"
           }`}
+          onClick={catagoryClick}
         >
-          Category
+          Catagory
         </button>
       </div>
-
-      <ul>
-        {sortedItems.map((item) => (
-          <Item
-            key={item.id}
-            name={item.name}
-            quantity={item.quantity}
-            category={item.category}
-            onSelect={() => onItemSelect(item.name)}
-          />
-        ))}
-      </ul>
+      {data.map((item, index) => (
+        <Item
+          key={index}
+          name={item.name}
+          quantity={item.quantity}
+          category={item.category}
+        />
+      ))}
     </div>
   );
 };

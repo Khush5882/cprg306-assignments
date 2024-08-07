@@ -1,80 +1,87 @@
 "use client";
+
 import React, { useState } from "react";
 
-const NewItem = ({ onAddItem }) => {
+const Newitem = ({ Submit }) => {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [category, setCategory] = useState("produce");
+  const [category, setCategory] = useState("product");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const item = {
-      name: name,
-      quantity: quantity,
-      category: category,
-    };
-
-    onAddItem(item);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    Submit({ name, quantity, category });
+    setName("");
+    setQuantity(1);
+    setCategory("product");
+  };
+  const values = (e) => {
+    if (e.target.value > 99) {
+      alert("Please enter a number less than 100");
+      setQuantity(99);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="text-black">
-        {/* <div className="p-2 bg-slate-900 text-black max-w-sm w-full"> */}
-        <div className="mb-2">
-          <input
-            placeholder="Item name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full mt-1 border-2 border-gray-300 p-2 rounded-lg font-sans"
-          />
-        </div>
-        <div className="flex justify-between">
-          <div className="w-1/2 ">
+    <div className="">
+      <form
+        onSubmit={handleSubmit}
+        className="flex justify-center flex-col gap-5"
+      >
+        <div className="border-gray-700 px-16 py-6 border-4 bg-black">
+          <div className="py-1 px-1">
             <input
-              type="number"
-              min="1"
-              max="99"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+              type="text"
+              placeholder="Name"
+              className=""
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              className="w-20 ml-1 border-2 border-gray-300 p-2 rounded-lg font-sans"
             />
           </div>
-          <div className="flex justify-between">
-            <select
-              className="ml-1 border-2 border-gray-300 p-2 rounded-lg font-sans"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="produce">Produce</option>
-              <option value="dairy">Dairy</option>
-              <option value="Bakery">Bakery</option>
-              <option value="Meat">Meat</option>
-              <option value="Frozen Foods">Frozen Foods</option>
-              <option value="Canned Goods">Canned Goods</option>
-              <option value="Dry Goods">Dry Goods</option>
-              <option value="Beverages">Beverages</option>
-              <option value="Snacks">Snacks</option>
-              <option value="Household">Household</option>
-              <option value="Other">Other</option>
-            </select>
+          <div className="py-1 px-1">
+            <div className="">
+              <input
+                type="number"
+                placeholder="Quantity"
+                className=""
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value) || values(e)}
+                max={99}
+                required
+              />
+            </div>
+            <div className="py-2">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className=""
+              >
+                <option value="category" disabled>
+                  Category
+                </option>
+                <option value="product">Product</option>
+                <option value="dairy">Dairy</option>
+                <option value="bakery">Bakery</option>
+                <option value="meat">Meat</option>
+                <option value="frozenfood">Frozen Food</option>
+                <option value="cannedfood">Canned Food</option>
+                <option value="drygoods">Dry Goods</option>
+                <option value="beverages">Beverages</option>
+                <option value="snacks">Snacks</option>
+                <option value="household">Household</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div className="px-1">
+            <button type="submit" className="border-2 bg-blue-500 md:w-20 ">
+              +
+            </button>
           </div>
         </div>
-
-        <button
-          type="submit"
-          className="w-full mt-4 py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-        >
-          +
-        </button>
-      </div>
-      {/* </div> */}
-    </form>
+      </form>
+    </div>
   );
 };
 
-export default NewItem;
+export default Newitem;
